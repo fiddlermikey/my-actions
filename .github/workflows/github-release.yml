@@ -1,0 +1,27 @@
+name: Create GitHub release version and location
+on:
+  workflow_call:
+    outputs:
+      release_version:
+        description: The computed release version for the release (or pre-release) being built
+        value: ${{ jobs.create-github-release.outputs.release_version }}
+      release_url:
+        description: The upload URL for build artifacts for this release
+        value: ${{ jobs.create-github-release.outputs.release_url }}
+jobs:
+  create-github-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.set-outputs.outputs.release_version }}
+      release_url: ${{ steps.set-outputs.outputs.release_url }}
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Display release variables
+        if: github.event_name == 'pull_request'
+        id: set-outputs
+        run: |
+          echo "release_version=1.1.1" | tee -a "$GITHUB_OUTPUT"
+          echo "release_url=https://api.github.com/my-action" | tee -a "$GITHUB_OUTPUT"
+
+    
